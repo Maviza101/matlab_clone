@@ -58,7 +58,7 @@ function runCommand(commandAndArguments) {
         created, throw an error.*/
         var incomingMatrix = allMatrices[commandAndArguments[1]];
         var recipientMatrix = allMatrices[commandAndArguments[2]];
-        allMatrices[commandAndArguments[2]] = math.add(incomingMatrix, recipientMatrix);
+        allMatrices[commandAndArguments[2]] = math.add(incomingMatrix, 4);
         console.log(incomingMatrix);
         console.log(recipientMatrix);
       }
