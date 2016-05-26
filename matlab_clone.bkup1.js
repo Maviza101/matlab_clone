@@ -94,7 +94,7 @@ function createMatrix(matrixName, matrixContent) {
 }
 
 function help() {
-  console.log()
+  console.log();
 }
 
 /*helper or client functions*/
