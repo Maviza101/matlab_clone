@@ -100,18 +100,21 @@ function runCommand(aCommand, nameOfMatrix, otherArgugments) {
   aCommand = aCommand.toLowerCase();
   switch (aCommand) {
     case 'create':
-      /*note that parseMatrix doesn't check that the rows have
-      the number of columns or all their elements are numbers. It's
-      createMatrix that does that.*/
+      try {
       var matrixElements = parseMatrix(otherArgugments);
       createMatrix(nameOfMatrix, matrixElements);
+      }
+      catch (error) {
+        console.log(error.name + ': ' + error.message);
+        }
       break;
       
     case 'add':
       try {
         var recipientMatrix = allMatrices[nameOfMatrix];
         var incomingMatrix = allMatrices[otherArgugments];
-        console.log(recipientMatrix.add(incomingMatrix));
+        recipientMatrix = recipientMatrix.add(incomingMatrix);
+        console.log(recipientMatrix);
       }
       catch (error) {
         console.log(error.name + ': ' + error.message);
@@ -122,7 +125,8 @@ function runCommand(aCommand, nameOfMatrix, otherArgugments) {
     try {
       var recipientMatrix = allMatrices[nameOfMatrix];
       var incomingMatrix = allMatrices[otherArgugments];
-      console.log(recipientMatrix.subtract(incomingMatrix));
+      recipientMatrix = recipientMatrix.subtract(incomingMatrix);
+      console.log(recipientMatrix);
     }
     catch (error) {
       console.log(error.name + ': ' + error.message);
@@ -151,22 +155,37 @@ function runCommand(aCommand, nameOfMatrix, otherArgugments) {
       break;
       
     case 'save':
-      if(nameOfMatrix === '>>') {
+      try {
+        if(nameOfMatrix === '>>') {
         saveSession(allMatrices, otherArgugments);
+        }
+      }
+      catch(error) {
+        console.log(error.name + ': ' + error.message);
       }
       break;
       
     case 'load':
-      /*for semantics*/
-      var filePath = nameOfMatrix;
-      loadSession(filePath);
+      try {
+        /*for semantics*/
+        var filePath = nameOfMatrix;
+        loadSession(filePath);
+      }
+      catch(error) {
+        console.log(error.name + ': ' + error.message);
+      }
       break;
       
       
     case 'help':
-      /*for semantics*/
-      var option = nameOfMatrix;
-      console.log(help(option));
+      try {
+        /*for semantics*/
+        var option = nameOfMatrix;
+        console.log(help(option));
+      }
+      catch(error) {
+        console.log(error.name + ': ' + error.message);
+      }
       break;
       
     case 'quit':
