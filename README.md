@@ -3,12 +3,14 @@ matlab_clone is a clone/replica of Matlab's REPL using strict JavaScript/ECMAScr
 subtract and concatenate matrices, and these matrices are instances of Matrices.
 
 DEPENDENCIES
+
 This program has two dependencies:
 1. node.js. You can find installation instructions on their website: https://nodejs.org
 2. jsonfile, which is a module of node.js. You can install it by typing the following command in a terminal or command prompt:
     npm install jsonfile
 
 HOW TO RUN MATLAB_CLONE
+
 1. Open a terminal or command prompt on your machine.
 2. Clone this repository to your computer using the following command in the terminal:
     git clone https://github.com/Maviza101/matlab_clone
@@ -19,6 +21,7 @@ HOW TO RUN MATLAB_CLONE
 That's all!
 
 AVAILABLE COMMANDS
+
 The available commands are:
 
 create 
