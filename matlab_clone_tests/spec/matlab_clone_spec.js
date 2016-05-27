@@ -1,7 +1,7 @@
 //var source = require('../../matlab_clone.js');
 describe("A clone of Matlab's REPL.", function() {
   /*create a 2 x 3 matrix*/
-  matrix = new Matrices([[1,2,3], [5,6,7]]);
+  /*matrix = new Matrices([[1,2,3], [5,6,7]]);*/
   
   it("runCommand() should be defined", function() {
     expect(runCommand).toBeDefined();
@@ -39,8 +39,47 @@ describe("A clone of Matlab's REPL.", function() {
     expect(containsOnlyNumbers).toBeDefined();
   });
   
-  it("runCommand() should be defined", function() {
-    expect(runCommand).toBeDefined();
+  document.write('\n\n');
+  
+  it("isValidMatrix([[2,3,4], [9,8,7]]) should return true", function() {
+    expect(isValidMatrix([[2,3,4], [9,8,7]])).toBe(true);
   });
   
+  it("isValidMatrix([ [2, 3,4], [9, 8,7]]) should return true", function() {
+    expect(isValidMatrix([ [2, 3,4], [9, 8,7]])).toBe(true);
+  });
+  
+  it("isValidMatrix([   [   2,   3,  4], [     9, 8,   7]]) should return true", function() {
+    expect(isValidMatrix([   [   2,   3,  4], [     9, 8,   7]])).toBe(true);
+  });
+  
+  it("isValidMatrix([[2], [2]]) should return true", function() {
+    expect(isValidMatrix([[2], [2]])).toBe(true);
+  });
+  
+  it("isValidMatrix([[], []]) should return true", function() {
+    expect(isValidMatrix([[], []])).toBe(true);
+  });
+  
+  
+  it("isValidMatrix([[2,3,4], [9,8,]]) should return false", function() {
+    expect(isValidMatrix([[2,3,4], [9,8,]])).toBe(false);
+  });
+  
+  it("isValidMatrix([[2,3,4], [9,8]]) should return false", function() {
+    expect(isValidMatrix([[2,3,4], [9,8]])).toBe(false);
+  });
+  
+  it("isValidMatrix([[2,3,4], []]) should return false", function() {
+    expect(isValidMatrix([[2,3,4], []])).toBe(false);
+  });
+  
+  it("isValidMatrix([[2,3,4], [9,\'h\',7]]) should return false", function() {
+    expect(isValidMatrix([[2,3,4], [9,'h',7]])).toBe(false);
+  });
+  
+  /*it("createMatrix(\'xyz\', [[2,3,4], [9,8,7]]) should return [ [2, 3, 4], [9, 8, 7] ] ", function() {
+    expect(createMatrix('xyz', [[2,3,4], [9,8,7]])).toBe('[ [2, 3, 4], [9, 8, 7] ]');
+  });
+  */
 });

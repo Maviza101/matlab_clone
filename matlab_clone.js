@@ -182,9 +182,10 @@ function runCommand(aCommand, nameOfMatrix, otherArgugments) {
 function createMatrix(matrixName, matrixContent) {
   if(isValidMatrix(matrixContent)) {
     allMatrices[matrixName] = new Matrices(matrixContent);
+    return allMatrices[matrixName].rows;
   }
   else {
-    console.log('Failed to create matrix.');
+    return('Failed to create matrix.');
   }
 }
 
