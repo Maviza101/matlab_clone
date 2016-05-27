@@ -2,9 +2,6 @@
 var jsonfile = require('jsonfile');
 jsonfile.spaces = 2;
 
-/*
-read the command supplied by the user all on a SINGLE line
-*/
 const readline = require('readline');
 const rl = readline.createInterface(process.stdin, process.stdout);
 
@@ -21,7 +18,7 @@ rl.on('line', function(line){
     rl.prompt(true);
 })
 
-/*create a private object literal for holding ALL matrices*/
+/*create an object literal for holding ALL matrices*/
 var allMatrices = {};
 
 class Matrices {
@@ -194,7 +191,7 @@ function runCommand(aCommand, nameOfMatrix, otherArgugments) {
       break;
       
     default: 
-      console.log('Invalid command. Please try again. Type \'help [command]\' to read more about how to use this software.');
+      console.log('Invalid command. Please try again. Type \'help [COMMAND]\' to read more about how to use this software.');
   }
 }
 
@@ -209,15 +206,25 @@ function createMatrix(matrixName, matrixContent) {
 }
 
 function saveSession(someObject, somePath) {
-  jsonfile.writeFile(somePath, someObject, err => { if(err !== null) return err; });
+  try {
+    jsonfile.writeFile(somePath, someObject, err => { if(err !== null) return err; });
+  }
+  catch (error) {
+    console.log(error.name + ': ' + error.message);
+    }
 }
 
 function loadSession(filePath) {
-  var someObj = jsonfile.readFileSync(filePath);
-  for(var key in someObj) {
-    allMatrices[key] = new Matrices(someObj[key].rows);  
+  try {
+    var someObj = jsonfile.readFileSync(filePath);
+    for(var key in someObj) {
+      allMatrices[key] = new Matrices(someObj[key].rows);  
+    }
+    console.log('Successfully loaded session in: ' + filePath);
   }
-  console.log('Successfully loaded session in: ' + filePath);
+  catch (error) {
+    console.log(error.name + ': ' + error.message);
+    }
 }
 
 function help(forCommand) {
@@ -268,46 +275,61 @@ function isValidMatrix(matrixCandidate) {
 }
 
 function parseMatrix(toBeParsed) {
-  var temp = toBeParsed.split(']');
-  temp = temp.slice(0, (temp.length - 2));
-  var final = [];
-  temp.forEach(function(row) { 
-      final.push(row.replace(/.*\[/, ''));
-  });
-  var final2 = [];
-  var t = [];
-  final.forEach(function(rowStr, rowOfElement) { 
-    t = rowStr.split(',');
-    t.forEach(function(columnStr, columnOfElement) {
-      t[columnOfElement] = parseInt(columnStr);
+  try {
+    var temp = toBeParsed.split(']');
+    temp = temp.slice(0, (temp.length - 2));
+    var final = [];
+    temp.forEach(function(row) { 
+        final.push(row.replace(/.*\[/, ''));
     });
-    final2.push(t);
-  });
-  return final2;
+    var final2 = [];
+    var t = [];
+    final.forEach(function(rowStr, rowOfElement) { 
+      t = rowStr.split(',');
+      t.forEach(function(columnStr, columnOfElement) {
+        t[columnOfElement] = parseInt(columnStr);
+      });
+      final2.push(t);
+    });
+    return final2;    
+  }
+  catch (error) {
+    console.log(error.name + ': ' + error.message);
+    }
 }
 
 function allSameTypeLength(oneMatrix) {
-  var firstElementType = typeof oneMatrix[0];
-  var firstElementLength = oneMatrix[0].length;
-  var hasSameTypeAndLength = oneMatrix.every(row => (typeof row === firstElementType && row.length === firstElementLength));
-  return hasSameTypeAndLength;
+  try {
+    var firstElementType = typeof oneMatrix[0];
+    var firstElementLength = oneMatrix[0].length;
+    var hasSameTypeAndLength = oneMatrix.every(row => (typeof row === firstElementType && row.length === firstElementLength));
+    return hasSameTypeAndLength;
+  }
+  catch (error) {
+    console.log(error.name + ': ' + error.message);
+    }
 }
 
 function containsOnlyNumbers(someMatrix) {
-  /*var hasNumbersOnly = someMatrix.every(row => {row.every(element => isNaN(element) ) });*/
-  var hasNumbersOnly = true;
-  for(var i = 0; i < someMatrix.length; i++) {
-    for(var j = 0; j < someMatrix[i].length; j++) {
-      if(isNaN(someMatrix[i][j])) {
-        hasNumbersOnly = false;
+  try {
+    var hasNumbersOnly = true;
+    for(var i = 0; i < someMatrix.length; i++) {
+      for(var j = 0; j < someMatrix[i].length; j++) {
+        if(isNaN(someMatrix[i][j])) {
+          hasNumbersOnly = false;
+          break;
+        }
+      }
+      if(hasNumbersOnly !== true) {
         break;
       }
     }
-    if(hasNumbersOnly !== true) {
-      break;
-    }
+    return hasNumbersOnly;
+    
   }
-  return hasNumbersOnly;
+  catch (error) {
+    console.log(error.name + ': ' + error.message);
+    }
 }
 
 //load juy.txt
