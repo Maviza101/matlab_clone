@@ -166,7 +166,7 @@ function runCommand(aCommand, nameOfMatrix, otherArgugments) {
     case 'help':
       /*for semantics*/
       var option = nameOfMatrix;
-      help(option);
+      console.log(help(option));
       break;
       
     case 'quit':
@@ -185,7 +185,7 @@ function createMatrix(matrixName, matrixContent) {
     return allMatrices[matrixName].rows;
   }
   else {
-    return('Failed to create matrix.');
+    return('Failed to create matrix. Type \'help [command]\' to read about how to use this software.');
   }
 }
 
@@ -201,8 +201,21 @@ function loadSession(filePath) {
   console.log('Successfully loaded session in: ' + filePath);
 }
 
-function help() {
-  console.log();
+function help(forCommand) {
+  switch(forCommand) {
+    case 'create':
+      return 'Syntax: \n  \
+              create MATRIX_NAME CONTENTS_OF_MATRIX\n  \
+              Note that CONTENTS_OF_MATRIX must be of the form [array1, array2, array3] e.g [[1,2,3],[4,5,6]], [[1],[2],[3],[4]]';
+      break;
+      
+    default:
+      var manual = 'Available commands: \n  \
+                    create, add, subtract, concat, show, save, load, quit.\n  \
+                    Type \'help COMMAND\' for more info about a specific command.\n  \
+                    Note that matrices can ONLY contain numbers.';
+      return manual;  
+  }
 }
 
 /*helper or client functions*/
