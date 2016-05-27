@@ -206,13 +206,37 @@ function help(forCommand) {
     case 'create':
       return 'Syntax: \n  \
               create MATRIX_NAME CONTENTS_OF_MATRIX\n  \
-              Note that CONTENTS_OF_MATRIX must be of the form [array1, array2, array3] e.g [[1,2,3],[4,5,6]], [[1],[2],[3],[4]]';
+              Note that CONTENTS_OF_MATRIX must be of the form [array1, array2, array3]. \n\
+              EXAMPLES: \n\
+              create matrix1 [[1,2,3],[4,5,6]] \n\
+              create matrix2 [[1],[2],[3],[4]]';
+      break;
+      
+    case 'add':
+      return 'Syntax: \n  \
+              add RECIPIENT_MATRIX MATRIX_TO_ADD\n  \
+              Used when you want to add the elements of MATRIX_TO_ADD to RECIPIENT_MATRIX. Note that \n\
+              the two matrices MUST be of the same dimensions(or the program will error out). Note also \n\
+              that elements of RECIPIENT_MATRIX will be assigned the result from each sum. \n\
+              EXAMPLE: \n\
+              add matrix1 matrix2';
+      break;
+      
+    case 'subtract':
+      return 'Syntax: \n  \
+              subtract RECIPIENT_MATRIX MATRIX_TO_SUBTRACT\n  \
+              Used when you want to subtract the elements of MATRIX_TO_ADD from RECIPIENT_MATRIX. Note that \n\
+              the two matrices MUST be of the same dimensions(or the program will error out). Note also \n\
+              that elements of RECIPIENT_MATRIX will be assigned the result from each difference. \n\
+              EXAMPLE: \n\
+              subtract matrix1 matrix2';
       break;
       
     default:
       var manual = 'Available commands: \n  \
                     create, add, subtract, concat, show, save, load, quit.\n  \
                     Type \'help COMMAND\' for more info about a specific command.\n  \
+                    Note that you can only use a single space between the commands/arguments you give.\n  \
                     Note that matrices can ONLY contain numbers.';
       return manual;  
   }
