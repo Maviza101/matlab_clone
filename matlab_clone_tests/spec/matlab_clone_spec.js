@@ -78,8 +78,15 @@ describe("A clone of Matlab's REPL.", function() {
     expect(isValidMatrix([[2,3,4], [9,'h',7]])).toBe(false);
   });
   
-  /*it("createMatrix(\'xyz\', [[2,3,4], [9,8,7]]) should return [ [2, 3, 4], [9, 8, 7] ] ", function() {
-    expect(createMatrix('xyz', [[2,3,4], [9,8,7]])).toBe('[ [2, 3, 4], [9, 8, 7] ]');
+  it("parseMatrix(\'[[2,3,4], [9,\'h\',7]]\') should return [[2,3,4], [9,\'h\',7]]", function() {
+    expect(parseMatrix('[[2,3,4], [9,\'h\',7]]').join(' ')).toBe([[2,3,4], [9,NaN,7]].join(' '));
   });
-  */
+  
+  it("parseMatrix(\'[[2,3,4], [9,7]]\') should return [[2,3,4], [9,7]]", function() {
+    expect(parseMatrix('[[2,3,4], [9,7]]').join(' ')).toBe([[2,3,4], [9,7]].join(' '));
+  });
+  
+  it("parseMatrix(\'[[2,3,4], [9,4,7]]\') should return [[2,3,4], [9,4,7]]", function() {
+    expect(parseMatrix('[[2,3,4], [9,4,7]]').join(' ')).toBe([[2,3,4], [9,4,7]].join(' '));
+  });
 });
