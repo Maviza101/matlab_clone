@@ -1,12 +1,10 @@
 'use strict';
-/*
-read the command supplied by the user all on a SINGLE line
-*/
-var fs = require('fs');
-
 var jsonfile = require('jsonfile');
 jsonfile.spaces = 2;
 
+/*
+read the command supplied by the user all on a SINGLE line
+*/
 const readline = require('readline');
 const rl = readline.createInterface(process.stdin, process.stdout);
 
@@ -24,7 +22,7 @@ rl.on('line', function(line){
 })
 
 /*create a private object literal for holding ALL matrices*/
-var allMatrices = new Object();
+var allMatrices = {};
 
 class Matrices {
   constructor(newMatrix) {

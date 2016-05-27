@@ -1,1 +1,0 @@
-var inp = alert('Please entersome...');
