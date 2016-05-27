@@ -175,7 +175,7 @@ function runCommand(aCommand, nameOfMatrix, otherArgugments) {
       break;
       
     default: 
-      console.log('Invalid command. Please try again.');
+      console.log('Invalid command. Please try again. Type \'help [command]\' to read more about how to use this software.');
   }
 }
 
@@ -185,7 +185,7 @@ function createMatrix(matrixName, matrixContent) {
     return allMatrices[matrixName].rows;
   }
   else {
-    return('Failed to create matrix. Type \'help [command]\' to read about how to use this software.');
+    return('Failed to create matrix. Type \'help [command]\' to read more about how to use this software.');
   }
 }
 
