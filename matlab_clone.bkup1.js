@@ -2,13 +2,16 @@
 /*
 read the command supplied by the user all on a SINGLE line
 */
-var readline = require('readline');
-var rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-  terminal: false
-});
+var fs = require('fs');
 
+var jsonfile = require('jsonfile');
+jsonfile.spaces = 2;
+
+const readline = require('readline');
+const rl = readline.createInterface(process.stdin, process.stdout);
+
+rl.setPrompt('\nmatlab_clone> ');
+rl.prompt(true);
 rl.on('line', function(line){
     /*read the command, name of matrix to be modified and other arguments.*/
     var firstThreeArguments = line.split(' ', 3);
@@ -17,41 +20,86 @@ rl.on('line', function(line){
     var command = firstThreeArguments[0];
     var targetMatrix = firstThreeArguments[1];
     runCommand(command, targetMatrix, remainingArguments);
+    rl.prompt(true);
 })
 
 /*create a private object literal for holding ALL matrices*/
-var allMatrices = {};
+var allMatrices = new Object();
 
 class Matrices {
-  constructor() {
-    /*
-    arguments is an iterable object that contains ALL the parameters that
-    were given to an instance of Matrices as arguments. This is sort of an
-    implementation of overloaded methods.
-    */
-    var allArguments = Array.from(arguments);
-    var matrix = [];
-    allArguments.forEach(function(element) { matrix.push(element); });
-    console.log('You have created an array as follows:');
-    matrix.forEach(function(element) { console.log(element.toString()); });
+  constructor(newMatrix) {
+    var rows = [];
+    newMatrix.forEach( function(row) {
+      rows.push(row);
+    });
+    this.rows = rows;
+    this.numberOfRows = this.rows.length;
+    this.numberOfColumns = this.rows[0].length;
+    this.dimensions = [this.numberOfRows, this.numberOfColumns]
   }
   
-  add (otherMatrix) {
-    if(dimensionOf(this) === dimensionOf(otherMatrix)) {
-      
+  toString() {
+    return this.rows;
+  }
+  
+  add(otherMatrix) {
+    var tempMatrix = [[]];
+    if((this.numberOfRows === otherMatrix.numberOfRows) && (this.numberOfColumns === otherMatrix.numberOfColumns)) {
+      var i = 0,
+          j = 0,
+          temp = [];
+      this.rows.forEach(currentRow => {
+        temp = [];
+        j = 0;
+        currentRow.forEach(currentColumn => {
+          temp.push(this.rows[i][j] + otherMatrix.rows[i][j]);
+          j++;
+        });
+        i++;
+        tempMatrix.push(temp);
+      });
+    }
+    /*for some reason, the first element of tempMatrix from above 
+    is an empty string*/
+    tempMatrix = tempMatrix.splice(1);
+    return tempMatrix;
+  }
+  
+  subtract(otherMatrix) {
+    var tempMatrix = [[]];
+    if((this.dimensions[0] == otherMatrix.dimensions[0]) && (this.dimensions[1] == otherMatrix.dimensions[1])) {
+      var i = 0,
+          j = 0,
+          temp = [];
+      this.rows.forEach(currentRow => {
+        temp = [];
+        j = 0;
+        currentRow.forEach(currentColumn => {
+          temp.push(this.rows[i][j] - otherMatrix.rows[i][j]);
+          j++;
+        });
+        i++;
+        tempMatrix.push(temp);
+      });
+    }
+    /*for some reason, the first element of tempMatrix from above 
+    is an empty string*/
+    tempMatrix = tempMatrix.splice(1);
+    return tempMatrix;
+  }
+  
+  concat(otherMatrix) {
+    if(this.numberOfColumns === otherMatrix.numberOfColumns) {
+      otherMatrix.rows.forEach(row => this.rows.push(row));
+      return this.rows;
+    }
+    else {
+      return 'Error! Matrices to be concatenated must have the same number of columns.';
     }
   }
 }
 function runCommand(aCommand, nameOfMatrix, otherArgugments) {
   aCommand = aCommand.toLowerCase();
-  console.log(aCommand);
-  console.log(nameOfMatrix);
-  console.log(otherArgugments);
-  console.log(typeof otherArgugments);
-  console.log(otherArgugments[0]);
-  console.log(otherArgugments[1]);
-  console.log(typeof otherArgugments[0]);
-  console.log(typeof otherArgugments[1]);
   switch (aCommand) {
     case 'create':
       /*note that parseMatrix doesn't check that the rows have
@@ -62,24 +110,70 @@ function runCommand(aCommand, nameOfMatrix, otherArgugments) {
       break;
       
     case 'add':
-      try { 
-        /*get the name of the Matrices instance to which we want to add the other array(s), then
-        use its add method to add the other array(s). If no array with the specified name has been
-        created, throw an error.
-        */
-        console.log(allMatrices[nameOfMatrix]);
+      try {
         var recipientMatrix = allMatrices[nameOfMatrix];
-        recipientMatrix.add(otherArgugments); 
+        var incomingMatrix = allMatrices[otherArgugments];
+        console.log(recipientMatrix.add(incomingMatrix));
       }
       catch (error) {
         console.log(error.name + ': ' + error.message);
         }
       break;
       
+    case 'subtract':
+    try {
+      var recipientMatrix = allMatrices[nameOfMatrix];
+      var incomingMatrix = allMatrices[otherArgugments];
+      console.log(recipientMatrix.subtract(incomingMatrix));
+    }
+    catch (error) {
+      console.log(error.name + ': ' + error.message);
+      }
+    break;
+      
+    case 'concat':
+      try {
+        var toMatrix = allMatrices[nameOfMatrix];
+        var thisMatrix = allMatrices[otherArgugments];
+        toMatrix.concat(thisMatrix);
+      }
+      catch(error) {
+        console.log(error.name + ': ' + error.message);
+      }
+      break;
+      
+    case 'show':
+      try {
+        var stringForm = allMatrices[nameOfMatrix].toString();
+        console.log(stringForm);
+      }
+      catch(error) {
+        console.log(error.name + ': ' + error.message);
+      }
+      break;
+      
+    case 'save':
+      if(nameOfMatrix === '>>') {
+        saveSession(allMatrices, otherArgugments);
+      }
+      break;
+      
+    case 'load':
+      /*for semantics*/
+      var filePath = nameOfMatrix;
+      loadSession(filePath);
+      break;
+      
+      
     case 'help':
-      help(nameOfMatrix);
+      /*for semantics*/
+      var option = nameOfMatrix;
+      help(option);
+      break;
       
     case 'quit':
+      process.exit(0);
+      /* just a precaution... */
       break;
       
     default: 
@@ -89,8 +183,23 @@ function runCommand(aCommand, nameOfMatrix, otherArgugments) {
 
 function createMatrix(matrixName, matrixContent) {
   if(isValidMatrix(matrixContent)) {
-    allMatrices[matrixName] = new Matrices (matrixContent);
+    allMatrices[matrixName] = new Matrices(matrixContent);
   }
+  else {
+    console.log('Failed to create matrix.');
+  }
+}
+
+function saveSession(someObject, somePath) {
+  jsonfile.writeFile(somePath, someObject, err => { if(err !== null) return err; });
+}
+
+function loadSession(filePath) {
+  var someObj = jsonfile.readFileSync(filePath);
+  for(var key in someObj) {
+    allMatrices[key] = new Matrices(someObj[key].rows);  
+  }
+  console.log('Successfully loaded session in: ' + filePath);
 }
 
 function help() {
@@ -99,19 +208,7 @@ function help() {
 
 /*helper or client functions*/
 function isValidMatrix(matrixCandidate) {
-  var hasValidity = true;
-  /*case of when matrix has arrays of equal length as rows
-  but one of them contains a non-numeric element
-  */
-  if(allSameTypeAndLength(matrixCandidate)) {
-    if(!(containsOnlyNumbers(matrixCandidate))) {
-      hasValidity = false;
-    }
-  }
-  /*case of when the matrix has disproportionate rows*/
-  else {
-    hasValidity = false;
-  }
+  var hasValidity = (allSameTypeLength(matrixCandidate) && containsOnlyNumbers(matrixCandidate));
   return hasValidity;
 }
 
@@ -134,27 +231,28 @@ function parseMatrix(toBeParsed) {
   return final2;
 }
 
-function allSameTypeAndLength(oneMatrix) {
+function allSameTypeLength(oneMatrix) {
   var firstElementType = typeof oneMatrix[0];
   var firstElementLength = oneMatrix[0].length;
-  var hasSameTypeAndLength = true;
-  oneMatrix.forEach(function(element) {
-    if(typeof element !== firstElementType || oneMatrix[0].length !== firstElementLength ) {
-      return false;
-    }
-  });
+  var hasSameTypeAndLength = oneMatrix.every(row => (typeof row === firstElementType && row.length === firstElementLength));
   return hasSameTypeAndLength;
 }
 
 function containsOnlyNumbers(someMatrix) {
-  var numbersOnly = true;
-  someMatrix.forEach(function(currentRow) {
-    currentRow.forEach(function(currentElement) {
-      if (typeof currentElement !== typeof 16) {
-        return false;
+  /*var hasNumbersOnly = someMatrix.every(row => {row.every(element => isNaN(element) ) });*/
+  var hasNumbersOnly = true;
+  for(var i = 0; i < someMatrix.length; i++) {
+    for(var j = 0; j < someMatrix[i].length; j++) {
+      if(isNaN(someMatrix[i][j])) {
+        hasNumbersOnly = false;
+        break;
       }
-    });
-  });
-  
-  return numbersOnly;
+    }
+    if(hasNumbersOnly !== true) {
+      break;
+    }
+  }
+  return hasNumbersOnly;
 }
+
+//load juy.txt
