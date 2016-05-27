@@ -6,7 +6,6 @@ DEPENDENCIES
 
 This program has two dependencies:
 1. node.js. You can find installation instructions on their website: https://nodejs.org
-
 2. jsonfile, which is a module of node.js. You can install it by typing the following command in a terminal or command prompt:
     npm install jsonfile
 
